@@ -1,0 +1,3 @@
+//include ':pulltorefreshlib'
+//project(':pulltorefreshlib').projectDir = new File('../pulltorefreshlib')
+
