@@ -86,7 +86,18 @@ public class EclipseToAs {
 			else {
 				createBuildGradle(info);
 			}
+			
+			deleteBuilde(info);
 		}		
+	}
+
+	private void deleteBuilde(EProjectInfo info) {
+		File buildFile = new File(info.getDirFile(), "build");
+		if (buildFile.exists()) {
+			//buildFile.delete();
+			//FileUtils.deleteFolder(buildFile);
+			System.out.println(">>>> 删除build文件:" + buildFile.getPath());
+		}
 	}
 
 	/**
@@ -108,10 +119,15 @@ public class EclipseToAs {
 			}
 		}
 		
+		String jni = info.hasJni() ? "jniLibs.srcDirs = ['libs']" : "";
 		// 写入脚本
-		FileUtils.writeString(info.getDirPath() + "/build.gradle", String.format(templet, sb.toString()));
+		FileUtils.writeString(info.getDirPath() + "/build.gradle", String.format(templet, sb.toString(), jni));
 	}
 	
+//	private boolean isJni(EProjectInfo info) {
+//		return info == null ? false : info.hasJni();
+//	}
+
 	/**
 	 * 拷贝gradle文件
 	 * @param info

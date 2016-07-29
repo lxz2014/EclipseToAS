@@ -138,5 +138,25 @@ public class FileUtils {
 					.replace("\\\\", "/")
 					.replace("//", "/");
 	}  
+	
+	
+	/** 
+	 *  根据路径删除指定的目录或文件，无论存在与否 
+	 *@param sPath  要删除的目录或文件 
+	 *@return 删除成功返回 true，否则返回 false。 
+	 */  
+//	public static boolean deleteFolder(File file) {  
+//	    // 判断目录或文件是否存在  
+//	    if (!file.exists()) {  // 不存在返回 false  
+//	        return false;  
+//	    } else {  
+//	        // 判断是否为文件  
+//	        if (file.isFile()) {  // 为文件时调用删除文件方法  
+//	            return file.delete();  
+//	        } else {  // 为目录时调用删除目录方法  
+//	            return deleteFolder(file);  
+//	        }  
+//	    }  
+//	}  
 
 }

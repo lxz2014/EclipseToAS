@@ -18,6 +18,8 @@ public class EProjectInfo {
 	
 	// 依赖的路径
 	private List<String> dependentPaths = new ArrayList<String>();
+
+	private boolean hasJni = false;
 	
 	/**
 	 * 通过eclipse工程目录创建模型
@@ -33,6 +35,7 @@ public class EProjectInfo {
 		p.name = eclipseDirFile.getName();
 		p.dirFile = eclipseDirFile;
 		p.isLibrary = false;
+		p.hasJni  = hasJni(eclipseDirFile);
 		
 		String ppstring = FileUtils.readString(new File(eclipseDirFile, "/project.properties"));
 		if (!StringUtils.isEmpty(ppstring)) {
@@ -66,6 +69,17 @@ public class EProjectInfo {
 		return p;
 	}
 	
+	private static boolean hasJni(File f) {
+		boolean isJni = new File(f, "libs/armeabi").exists();
+		if (isJni) {
+			System.out.println("有jni " + f.getPath());
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 	private void addDependPath(String dpath) {
 		if (!dependentPaths.contains(dpath)) {
 			dependentPaths.add(dpath);
@@ -129,5 +143,9 @@ public class EProjectInfo {
 
 	public String getDirPath() {
 		return dirFile.getPath();
+	}
+
+	public boolean hasJni() {
+		return hasJni;
 	}
 }
