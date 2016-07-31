@@ -40,8 +40,8 @@ public class FileUtils {
 	}
 	
 	public static String absToReal(String basePath, String dstPath) {
-		basePath = basePath.replace("\\", "/").replace("//", "/");
-		dstPath = dstPath.replace("\\", "/").replace("//", "/");
+		basePath = replacePath(basePath);
+		dstPath = replacePath(dstPath);
 		
 		String sp1[] = basePath.split("/");
 		String sp2[] = dstPath.split("/");
@@ -154,7 +154,7 @@ public class FileUtils {
 	    }  
 	}
 
-	public static String checkPath(String path) {
+	public static String replacePath(String path) {
 		return path.replace("\\", "/")
 					.replace("\\\\", "/")
 					.replace("//", "/");

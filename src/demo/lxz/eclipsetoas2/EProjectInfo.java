@@ -54,7 +54,7 @@ public class EProjectInfo {
 						String map[] = line.split("=");
 						
 						if (map.length == 2) {
-							String dpath = FileUtils.checkPath(map[1]);
+							String dpath = FileUtils.replacePath(map[1]);
 							p.addDependPath(FileUtils.realToAbs(p.getDirFile(), dpath));
 						}
 						else {
