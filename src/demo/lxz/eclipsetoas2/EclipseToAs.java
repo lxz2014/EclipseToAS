@@ -218,7 +218,7 @@ public class EclipseToAs {
 				}
 			}
 			else {
-				System.out.println("失效的依赖库项目:" + path);
+				System.out.println("失效的依赖库项目,或者不在当前项目的根目录下:" + path);
 			}
 		}
 	}
