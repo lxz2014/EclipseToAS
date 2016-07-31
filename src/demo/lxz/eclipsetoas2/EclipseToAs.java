@@ -237,9 +237,9 @@ public class EclipseToAs {
 			return true;
 		}
 		
-		if ("build".equals(rootFile.getName()) && rootFile.isDirectory()) {
-			return true;
-		}
+//		if ("build".equals(rootFile.getName()) && rootFile.isDirectory()) {
+//			return true;
+//		}
 		
 		return false;
 	}
