@@ -11,7 +11,7 @@ public class Main {
 	 */
 	public static void main(String[] args) throws FileNotFoundException {
 		EclipseToAs ea = new EclipseToAs();
-		ea.toAsProject(new File("E:/mywork/AndroidWork/xf_realtime"));
+		ea.toAsProject(new File("E:/mywork/AndroidWork/xf_zhkt/AppStore/AppstoreAndroid"));
 		
 		//E:\mywork\AndroidWork\xf_realtime
 		//ea.toAsProject(new File("E:/mywork/AndroidWork/xf_realtime/"));

@@ -1,5 +1,6 @@
 package demo.lxz.eclipsetoas2;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -76,28 +77,48 @@ public class FileUtils {
 	 * @param args
 	 */
 	public static String readString(File f) {
+		BufferedSource source = null;
+		FileInputStream in = null;
 		try {
-			FileInputStream in = new FileInputStream(f);
-			BufferedSource source = Okio.buffer(Okio.source(in));
+			in = new FileInputStream(f);
+			source = Okio.buffer(Okio.source(in));
 			return source.readUtf8();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			close(in);
+			close(source);
 		}
 		return null;
 	}
 	
 	
+	private static void close(Closeable in) {
+		if (in != null) {
+			try {
+				in.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	/**
 	 * @param args
 	 */
 	public static void  writeString(File file, String string) {
+		FileOutputStream os = null;
+		BufferedSink source = null;
 		try {
-			FileOutputStream os = new FileOutputStream(file);
-			BufferedSink source = Okio.buffer(Okio.sink(os));
+			os = new FileOutputStream(file);
+			source = Okio.buffer(Okio.sink(os));
 			source.writeUtf8(string);
 			source.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			close(os);
+			close(source);
 		}
 	}
 	
@@ -137,6 +158,17 @@ public class FileUtils {
 		return path.replace("\\", "/")
 					.replace("\\\\", "/")
 					.replace("//", "/");
+	}
+
+	public static void rename(String path1, String path2) {
+		File f1 = new File(path1);
+		File f2 = new File(path2);
+		
+		if (f1.exists()) {
+			if (f1.renameTo(f2)) {
+				System.out.println("重命名成功");
+			}
+		}
 	}  
 	
 	

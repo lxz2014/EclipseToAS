@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 转换工具
@@ -85,19 +87,37 @@ public class EclipseToAs {
 			// 库项目
 			else {
 				createBuildGradle(info);
+				// 重新生成AndroidManifest.xml
+				createAndroidManifestXml(info);
 			}
-			
-			deleteBuilde(info);
 		}		
 	}
+	
+	private  static Pattern regex =Pattern.compile("package=\"(.*)\"");
 
-	private void deleteBuilde(EProjectInfo info) {
-		File buildFile = new File(info.getDirFile(), "build");
-		if (buildFile.exists()) {
-			//buildFile.delete();
-			//FileUtils.deleteFolder(buildFile);
-			System.out.println(">>>> 删除build文件:" + buildFile.getPath());
-		}
+	/**
+	 * 重新创建
+	 */
+	private void createAndroidManifestXml(EProjectInfo info) {
+		// 备份
+		String path = info.getDirPath() + "/AndroidManifest.xml";
+		FileUtils.rename(path, path + ".bak");
+		String packName = readPackName(path + ".bak");
+		System.out.println("\n解析出包名称:" + packName + "\n");
+		
+		String templet = FileUtils.readString(runDir + "/res/AndroidManifest.xml");
+
+		// 重命名包名称和编译版本
+		FileUtils.writeString(path, String.format(templet, packName, 11, 21));
+	}
+
+
+	private String readPackName(String path) {
+		Matcher mat = regex.matcher(FileUtils.readString(path));
+		 if ( mat.find()) {
+			 return mat.group(1);
+         }
+		return "";
 	}
 
 	/**
@@ -124,10 +144,6 @@ public class EclipseToAs {
 		FileUtils.writeString(info.getDirPath() + "/build.gradle", String.format(templet, sb.toString(), jni));
 	}
 	
-//	private boolean isJni(EProjectInfo info) {
-//		return info == null ? false : info.hasJni();
-//	}
-
 	/**
 	 * 拷贝gradle文件
 	 * @param info
@@ -221,9 +237,9 @@ public class EclipseToAs {
 			return true;
 		}
 		
-//		if ("build".equals(rootFile.getName()) && rootFile.isDirectory()) {
-//			return true;
-//		}
+		if ("build".equals(rootFile.getName()) && rootFile.isDirectory()) {
+			return true;
+		}
 		
 		return false;
 	}

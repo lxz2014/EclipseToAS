@@ -20,6 +20,8 @@ public class EProjectInfo {
 	private List<String> dependentPaths = new ArrayList<String>();
 
 	private boolean hasJni = false;
+
+	//private String packName;
 	
 	/**
 	 * 通过eclipse工程目录创建模型
@@ -148,4 +150,8 @@ public class EProjectInfo {
 	public boolean hasJni() {
 		return hasJni;
 	}
+
+//	public String getPackName() {
+//		return packName;
+//	}
 }
