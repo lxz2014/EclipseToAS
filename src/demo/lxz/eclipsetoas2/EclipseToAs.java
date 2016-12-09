@@ -21,6 +21,9 @@ public class EclipseToAs {
 	// 记录所有的eclipse工程目录
 	private Map<String, EProjectInfo> eprojects = new HashMap<String, EProjectInfo>();
 	
+	// 记录所有非当前根目录的 eclipse工程目录
+	private Map<String, EProjectInfo> extEprojects = new HashMap<String, EProjectInfo>();
+	
 	public void toAsProject(File rootFile) {
 		// step1 遍历所有的工程目录
 		traverseDir(rootFile, 0);
@@ -131,6 +134,9 @@ public class EclipseToAs {
 		StringBuilder sb = new StringBuilder();
 		for (String dependpath : info.getDependentPath()) {
 			EProjectInfo p = eprojects.get(dependpath);
+			if (p == null) {
+				p = extEprojects.get(dependpath);
+			}
 			if (p != null) {
 				sb.append(String.format("\tcompile project(':%s')\n", p.getName()));
 			}
@@ -176,11 +182,14 @@ public class EclipseToAs {
 	private void createSettingsGradle(EProjectInfo info) {
 		List<String> alldependlibpaths = new ArrayList<String>();
 		findAlldDependLib(info, alldependlibpaths);
-		
+		System.out.println("\n>>>>>>createSettingsGradle start " + info.getName() + "<<<<<<<<<");
 		StringBuilder sb = new StringBuilder();
 		for (String libpath : alldependlibpaths) {
 			EProjectInfo dependlib = eprojects.get(libpath);
-			
+			if (dependlib == null) {
+				dependlib = extEprojects.get(libpath);
+			}
+			System.out.println("libpath:" +dependlib.getDirPath());
 			String libName = dependlib.getName();
 			String libRealPath = FileUtils.absToReal(info.getDirPath(), dependlib.getDirPath());
 			
@@ -191,7 +200,7 @@ public class EclipseToAs {
 			
 			log(libRealPath);
 		}
-		
+		System.out.println(">>>>>>createSettingsGradle end" + info.getName() + "<<<<<<<<<\n");
 		FileUtils.writeString(info.getDirPath() + "/settings.gradle", sb.toString());
 	}
 
@@ -208,17 +217,36 @@ public class EclipseToAs {
 		
 		for (String path : dependlibs) {
 			EProjectInfo libInfo = eprojects.get(path);
+			if (libInfo == null) {
+				libInfo = extEprojects.get(path);
+			}
+			
 			if (libInfo != null) {
 				if (!allDepends.contains(libInfo.getDirPath())) {
 					allDepends.add(libInfo.getDirPath());
 					findAlldDependLib(libInfo, allDepends);
 				}
 				else {
-					System.out.println("貌似重复依赖了:" + path);
+					System.out.println("貌似重复依赖了1:" + path);
 				}
 			}
 			else {
-				System.out.println("失效的依赖库项目,或者不在当前项目的根目录下:" + path);
+				if (EProjectInfo.isProject(path)) {
+					if (!allDepends.contains(path)) {
+						System.out.println("存在的项目,但不在当前项目目录下,重新生成 " + path);
+						
+						EProjectInfo libInfoExt = EProjectInfo.createBy(path);
+						allDepends.add(path);
+						extEprojects.put(path, libInfoExt);
+						findAlldDependLib(libInfoExt, allDepends);
+					}
+					else {
+						System.out.println("貌似重复依赖了2:" + path);
+					}
+				}
+				else {
+					System.out.println("失效的依赖库项目,或者不在当前项目的根目录下:" + path);
+				}
 			}
 		}
 	}

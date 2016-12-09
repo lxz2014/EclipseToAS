@@ -23,6 +23,11 @@ public class EProjectInfo {
 
 	//private String packName;
 	
+	
+	public static EProjectInfo createBy(String eclipseDirPath) {
+		return createBy(new File(eclipseDirPath));
+	}
+	
 	/**
 	 * 通过eclipse工程目录创建模型
 	 * @param eclipseDirFile
@@ -109,8 +114,20 @@ public class EProjectInfo {
 	 * @param f
 	 * @return
 	 */
+	public static boolean isProject(String path) {
+		return isProject(new File(path));
+	}
+	
+	/**
+	 * 判断是否为一个eclipse项目
+	 * @param f
+	 * @return
+	 */
 	public static boolean isProject(File f) {
 		File[] list = f.listFiles();
+		if (list == null) {
+			return false;
+		}
 		
 		int count = 0;
 		for (File path : list) {
@@ -149,6 +166,10 @@ public class EProjectInfo {
 
 	public boolean hasJni() {
 		return hasJni;
+	}
+	
+	public boolean isProject() {
+		return isProject(dirFile);
 	}
 
 //	public String getPackName() {
